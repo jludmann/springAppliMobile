@@ -1,8 +1,9 @@
 package com.ludmann.GestionCompte.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.ludmann.GestionCompte.view.CustomJsonView;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -16,13 +17,18 @@ public class Compte {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView({CustomJsonView.VueUtilisateur.class, CustomJsonView.VueCompte.class})
-    private int id;
+    private Integer id;
 
+    @JsonView({CustomJsonView.VueUtilisateur.class, CustomJsonView.VueCompte.class})
     private String nom;
+
+    @JsonView({CustomJsonView.VueUtilisateur.class, CustomJsonView.VueCompte.class})
     private double solde;
+
+    @JsonView({CustomJsonView.VueCompte.class, CustomJsonView.VueUtilisateur.class})
     private double seuilAlerte;
 
-    @JsonIgnore
+    @JsonView({CustomJsonView.VueUtilisateur.class, CustomJsonView.VueCompte.class})
     @OneToMany(mappedBy = "compte")
     private List<Flux> listeFlux;
 
@@ -30,8 +36,36 @@ public class Compte {
     @ManyToOne
     private Utilisateur utilisateur;
 
-    public int getId() {
+    public void calculNewSolde() {
+        double somme = 0;
+
+        for (Flux flux : this.getListeFlux()) {
+            if (!flux.isPrisEnCompte()) {
+                somme = somme + flux.getMontant();
+                flux.setPrisEnCompte(true);
+            }
+        }
+        setSolde(solde + somme);
+    }
+
+    public Integer getId() {
         return id;
+    }
+
+    public List<Flux> getListeFlux() {
+        return listeFlux;
+    }
+
+    public void setListeFlux(List<Flux> listeFlux) {
+        this.listeFlux = listeFlux;
+    }
+
+    public Utilisateur getUtilisateur() {
+        return utilisateur;
+    }
+
+    public void setUtilisateur(Utilisateur utilisateur) {
+        this.utilisateur = utilisateur;
     }
 
     public void setId(int id) {

@@ -9,14 +9,18 @@ import javax.persistence.*;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Flux {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonView({CustomJsonView.VueFlux.class, CustomJsonView.VueCompte.class})
+    @JsonView({CustomJsonView.VueFlux.class, CustomJsonView.VueCompte.class, CustomJsonView.VueUtilisateur.class})
     private int id;
 
+    @JsonView({CustomJsonView.VueFlux.class,CustomJsonView.VueUtilisateur.class, CustomJsonView.VueCompte.class})
     private double montant;
+
+    @JsonView({CustomJsonView.VueFlux.class, CustomJsonView.VueCompte.class, CustomJsonView.VueUtilisateur.class})
     private String nom;
 
     @JsonView({CustomJsonView.VueFlux.class})
@@ -26,6 +30,8 @@ public abstract class Flux {
     @JsonView({CustomJsonView.VueFlux.class})
     @ManyToOne
     private Categorie categorie;
+
+    private boolean prisEnCompte = false;
 
     public int getId() {
         return id;
@@ -49,5 +55,29 @@ public abstract class Flux {
 
     public void setNom(String nom) {
         this.nom = nom;
+    }
+
+    public Compte getCompte() {
+        return compte;
+    }
+
+    public void setCompte(Compte compte) {
+        this.compte = compte;
+    }
+
+    public Categorie getCategorie() {
+        return categorie;
+    }
+
+    public void setCategorie(Categorie categorie) {
+        this.categorie = categorie;
+    }
+
+    public boolean isPrisEnCompte() {
+        return prisEnCompte;
+    }
+
+    public void setPrisEnCompte(boolean prisEnCompte) {
+        this.prisEnCompte = prisEnCompte;
     }
 }

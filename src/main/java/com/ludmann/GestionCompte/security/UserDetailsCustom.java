@@ -12,21 +12,24 @@ import java.util.List;
 
 public class UserDetailsCustom implements UserDetails {
 
-    private String userName;
+    private int id;
+    private String login;
     private String password;
     private boolean active;
     private List<GrantedAuthority> authorities;
 
     public UserDetailsCustom(Utilisateur utilisateur) {
-        this.userName = utilisateur.getLogin();
+        this.id = utilisateur.getId();
+        this.login = utilisateur.getLogin();
         this.password = utilisateur.getPassword();
         this.active = true;
 
         authorities = new ArrayList<>();
 
-        for (Role role : utilisateur.getListeRole()) {
+        for(Role role : utilisateur.getListeRole()){
             authorities.add(new SimpleGrantedAuthority(role.getNom()));
         }
+
     }
 
     @Override
@@ -41,7 +44,7 @@ public class UserDetailsCustom implements UserDetails {
 
     @Override
     public String getUsername() {
-        return userName;
+        return login;
     }
 
     @Override
@@ -62,5 +65,13 @@ public class UserDetailsCustom implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

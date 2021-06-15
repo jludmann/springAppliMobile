@@ -2,23 +2,26 @@ package com.ludmann.GestionCompte.security;
 
 import com.ludmann.GestionCompte.dao.UtilisateurDao;
 import com.ludmann.GestionCompte.model.Utilisateur;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+
 @Service
 public class UserDetailsServiceCustom implements UserDetailsService {
 
-    @Autowired
-    UtilisateurDao utilisateurDao;
+    private final UtilisateurDao utilisateurDao;
+
+    public UserDetailsServiceCustom(UtilisateurDao utilisateurDao) {
+        this.utilisateurDao = utilisateurDao;
+    }
 
     @Override
-    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+    public UserDetailsCustom loadUserByUsername(String pseudoSaisi) throws UsernameNotFoundException {
 
-        Utilisateur utilisateur = utilisateurDao.findByLogin(s).orElseThrow(() -> new UsernameNotFoundException(s + "inconnu"));
-
+        Utilisateur utilisateur = utilisateurDao
+                .trouverParLoginAvecRoles(pseudoSaisi)
+                .orElseThrow(() -> new UsernameNotFoundException(pseudoSaisi + " inconnu"));
 
         return new UserDetailsCustom(utilisateur);
     }

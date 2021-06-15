@@ -22,7 +22,7 @@ public class CategorieController {
         this.categorieDao = categorieDao;
     }
 
-    @GetMapping("/user/categorie/{id}")
+    @GetMapping("/categorie/{id}")
     public ResponseEntity<Categorie> getCategorie(@PathVariable int id) {
 
 
@@ -38,22 +38,22 @@ public class CategorieController {
     }
 
 
-    @GetMapping("/user/categories")
+    @GetMapping("/categories")
     public ResponseEntity<List<Categorie>> getCategorie() {
 
         return ResponseEntity.ok(categorieDao.findAll());
     }
 
-    @PostMapping("/admin/categorie")
+    @PostMapping("/categorie")
     public ResponseEntity<String> addCategorie(@RequestBody Categorie categorie) {
 
         categorie = categorieDao.saveAndFlush(categorie);
 
-        return ResponseEntity.created(URI.create("/user/categorie/" + categorie.getId())).build();
+        return ResponseEntity.created(URI.create("/categorie/" + categorie.getId())).build();
 
     }
 
-    @DeleteMapping("/admin/categorie/{id}")
+    @DeleteMapping("/categorie/{id}")
     public ResponseEntity<Integer> deleteCategorie(@PathVariable int id) {
 
         if (categorieDao.existsById(id)) {

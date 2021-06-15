@@ -1,6 +1,5 @@
 package com.ludmann.GestionCompte.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.ludmann.GestionCompte.view.CustomJsonView;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -18,9 +17,10 @@ public class Categorie {
     @JsonView({CustomJsonView.VueCategorie.class, CustomJsonView.VueFlux.class})
     private int id;
 
-    private int nom;
+    @JsonView(CustomJsonView.VueCategorie.class)
+    private String nom;
 
-    @JsonIgnore
+    @JsonView(CustomJsonView.VueCategorie.class)
     @OneToMany(mappedBy = "categorie")
     private List<Flux> listeFlux;
 
@@ -32,11 +32,11 @@ public class Categorie {
         this.id = id;
     }
 
-    public int getNom() {
+    public String getNom() {
         return nom;
     }
 
-    public void setNom(int nom) {
+    public void setNom(String nom) {
         this.nom = nom;
     }
 }

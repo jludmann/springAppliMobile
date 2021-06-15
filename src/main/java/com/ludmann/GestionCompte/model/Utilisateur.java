@@ -3,9 +3,11 @@ package com.ludmann.GestionCompte.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.ludmann.GestionCompte.view.CustomJsonView;
+import org.hibernate.annotations.Cascade;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -24,7 +26,10 @@ public class Utilisateur {
     @Column(nullable = false)
     private String password;
 
+    @JsonView(CustomJsonView.VueUtilisateur.class)
     private String nom;
+
+    @JsonView(CustomJsonView.VueUtilisateur.class)
     private String prenom;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -34,11 +39,17 @@ public class Utilisateur {
             joinColumns = @JoinColumn(name = "id_utilisateur"),
             inverseJoinColumns = @JoinColumn(name = "id_role")
     )
-    private List<Role> listeRole;
+    private List<Role> listeRole = new ArrayList<>();
 
-    @JsonIgnore
+    @JsonView(CustomJsonView.VueUtilisateur.class)
     @OneToMany(mappedBy = "utilisateur")
     private List<Compte> listeCompte;
+
+    public Utilisateur(Integer idUtilisateur) {
+        this.id = id;
+    }
+
+    public Utilisateur() {}
 
     public int getId() {
         return id;

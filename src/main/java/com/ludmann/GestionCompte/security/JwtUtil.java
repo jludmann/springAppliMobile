@@ -8,6 +8,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtUtil {
@@ -16,16 +19,30 @@ public class JwtUtil {
     private String secret;
 
     public Claims getTokenBody(String token) {
-
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
-
+        return Jwts
+                .parser()
+                .setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(UserDetailsCustom userDetails) {
+
+        Map<String, Object> extra = new HashMap<>();
+        extra.put("id",userDetails.getId());
+
+        Object[] listeRole = userDetails.getAuthorities().stream()
+                .map(ga -> ga.toString())
+                .collect(Collectors.toList())
+                .toArray();
+
+        extra.put("roles",listeRole);
+
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
+                .addClaims(extra)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*3600*12))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 12))
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
@@ -36,10 +53,8 @@ public class JwtUtil {
                 .after(new Date());
     }
 
-    public boolean validToken(String token, UserDetails userDetails) {
-        String userName = getTokenBody(token).getSubject();
-        return userName.equals(userDetails.getUsername()) && tokenNonExpire(token);
+    public boolean valideToken(String token, UserDetails userDetails) {
+        String username = getTokenBody(token).getSubject();
+        return username.equals(userDetails.getUsername()) && tokenNonExpire(token);
     }
-
-
 }

@@ -1,6 +1,6 @@
 package com.ludmann.GestionCompte.Controller;
 
-import com.ludmann.GestionCompte.dao.FluxDao;
+import com.ludmann.GestionCompte.dao.FluxMensuelDao;
 import com.ludmann.GestionCompte.model.Flux;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,20 +13,20 @@ import java.util.Optional;
 
 @RestController
 @CrossOrigin
-public class FluxController {
+public class FluxMensuelController {
 
-    FluxDao fluxDao;
+    FluxMensuelDao fluxMensuelDao;
 
     @Autowired
-    FluxController(FluxDao fluxDao) {
-        this.fluxDao = fluxDao;
+    FluxMensuelController(FluxMensuelDao fluxMensuelDao) {
+        this.fluxMensuelDao = fluxMensuelDao;
     }
 
-    @GetMapping("/user/flux/{id}")
+    @GetMapping("/user/fluxMensuel/{id}")
     public ResponseEntity<Flux> getFlux(@PathVariable int id) {
 
 
-        Optional<Flux> flux = fluxDao.findById(id);
+        Optional<Flux> flux = fluxMensuelDao.findById(id);
 
         if (flux.isPresent()) {
             return ResponseEntity.ok(flux.get());
@@ -38,26 +38,26 @@ public class FluxController {
     }
 
 
-    @GetMapping("/user/allflux")
+    @GetMapping("/listeFluxMensuel")
     public ResponseEntity<List<Flux>> getFlux() {
 
-        return ResponseEntity.ok(fluxDao.findAll());
+        return ResponseEntity.ok(fluxMensuelDao.findAll());
     }
 
-    @PostMapping("/user/flux")
+    @PostMapping("/fluxMensuel")
     public ResponseEntity<String> addFlux(@RequestBody Flux flux) {
 
-        flux = fluxDao.saveAndFlush(flux);
+        flux = fluxMensuelDao.saveAndFlush(flux);
 
-        return ResponseEntity.created(URI.create("/user/flux/" + flux.getId())).build();
+        return ResponseEntity.created(URI.create("/fluxMensuel/" + flux.getId())).build();
 
     }
 
-    @DeleteMapping("/user/flux/{id}")
+    @DeleteMapping("/fluxMensuel/{id}")
     public ResponseEntity<Integer> deleteFlux(@PathVariable int id) {
 
-        if (fluxDao.existsById(id)) {
-            fluxDao.deleteById(id);
+        if (fluxMensuelDao.existsById(id)) {
+            fluxMensuelDao.deleteById(id);
             return ResponseEntity.ok().body(id);
         } else {
             return ResponseEntity.noContent().build();
