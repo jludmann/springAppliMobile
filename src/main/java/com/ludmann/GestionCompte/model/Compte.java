@@ -2,17 +2,16 @@ package com.ludmann.GestionCompte.model;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import com.ludmann.GestionCompte.view.CustomJsonView;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
+import java.io.Serializable;
 import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Compte {
+public class Compte implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -94,5 +93,9 @@ public class Compte {
 
     public void setSeuilAlerte(double seuilAlerte) {
         this.seuilAlerte = seuilAlerte;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

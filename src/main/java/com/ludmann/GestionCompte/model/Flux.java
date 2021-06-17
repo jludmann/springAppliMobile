@@ -5,17 +5,18 @@ import com.ludmann.GestionCompte.view.CustomJsonView;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Flux {
+public abstract class Flux implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonView({CustomJsonView.VueFlux.class, CustomJsonView.VueCompte.class, CustomJsonView.VueUtilisateur.class})
-    private int id;
+    private Integer id;
 
     @JsonView({CustomJsonView.VueFlux.class,CustomJsonView.VueUtilisateur.class, CustomJsonView.VueCompte.class})
     private double montant;
@@ -33,11 +34,11 @@ public abstract class Flux {
 
     private boolean prisEnCompte = false;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

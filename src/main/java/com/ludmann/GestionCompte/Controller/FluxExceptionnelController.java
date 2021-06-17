@@ -2,6 +2,7 @@ package com.ludmann.GestionCompte.Controller;
 
 import com.ludmann.GestionCompte.dao.FluxExceptionnelDao;
 import com.ludmann.GestionCompte.model.Flux;
+import com.ludmann.GestionCompte.model.FluxExceptionnel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,14 +39,14 @@ public class FluxExceptionnelController {
     }
 
 
-    @GetMapping("/listeFluxExceptionnel")
+    @GetMapping("/user/listeFluxExceptionnel")
     public ResponseEntity<List<Flux>> getFlux() {
 
         return ResponseEntity.ok(fluxExceptionnelDao.findAll());
     }
 
-    @PostMapping("/fluxExceptionnel")
-    public ResponseEntity<String> addFlux(@RequestBody Flux flux) {
+    @PostMapping("/user/fluxExceptionnel")
+    public ResponseEntity<String> addFlux(@RequestBody FluxExceptionnel flux) {
 
         flux = fluxExceptionnelDao.saveAndFlush(flux);
 
@@ -53,7 +54,7 @@ public class FluxExceptionnelController {
 
     }
 
-    @DeleteMapping("/fluxExceptionnel/{id}")
+    @DeleteMapping("/user/fluxExceptionnel/{id}")
     public ResponseEntity<Integer> deleteFlux(@PathVariable int id) {
 
         if (fluxExceptionnelDao.existsById(id)) {
